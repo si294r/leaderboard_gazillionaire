@@ -119,6 +119,10 @@ $sql2 = "SELECT * FROM leaderboard WHERE facebook_id IN ('".implode("', '", $arr
 $statement2 = $connection->prepare($sql2);
 $statement2->execute();
 $row_friend = $statement2->fetchAll(PDO::FETCH_ASSOC);
+foreach ($row_friend as $key => $value) {
+    $row_friend[$key]['world'] = intval($value['world']);
+    $row_friend[$key]['score'] = intval($value['score']);
+}
 
 
 /* Finish */
