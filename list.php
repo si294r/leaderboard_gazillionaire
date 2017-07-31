@@ -68,8 +68,8 @@ if ($renew_cache == "1") {
         $statement = $connection->prepare($sql);
         $statement->execute();
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($rows as $k=>$v) {
-            $rows[$k]['world'] = intval($v['world']);
+        foreach ($rows as $key => $value) {
+            $rows[$key]['world'] = intval($value['world']);
         }
         
         file_put_contents(get_file_cache($v), json_encode($rows));
