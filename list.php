@@ -68,6 +68,9 @@ if ($renew_cache == "1") {
         $statement = $connection->prepare($sql);
         $statement->execute();
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as $k=>$v) {
+            $rows[$k]['world'] = intval($v['world']);
+        }
         
         file_put_contents(get_file_cache($v), json_encode($rows));
     }
@@ -102,7 +105,7 @@ $result = file_get_contents('https://graph.facebook.com/v2.9/'.$facebook_id.'/fr
         array(
             'http' => array(
                 'method' => 'GET',
-                'header' => 'Authorization:OAuth '.FACEBOOK_APP_TOKEN
+                'header' => 'Authorization:OAuth '. ($IS_DEVELOPMENT ? FACEBOOK_APP_TOKEN_DEV : FACEBOOK_APP_TOKEN)
             )
         )
     )

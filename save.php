@@ -6,8 +6,8 @@ include("config.php");
 $json = json_decode($input);
 
 $data['facebook_id'] = isset($json->facebook_id) ? $json->facebook_id : "";
-$data['country'] = isset($json->country) ? $json->country : 0;
-$data['score'] = isset($json->score) ? $json->score : "";
+$data['country'] = isset($json->country) ? $json->country : "";
+$data['score'] = isset($json->score) ? $json->score : 0;
 $data['display_name'] = isset($json->display_name) ? $json->display_name : "";
 
 $connection = new PDO(
