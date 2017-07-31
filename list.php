@@ -70,6 +70,7 @@ if ($renew_cache == "1") {
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
         foreach ($rows as $key => $value) {
             $rows[$key]['world'] = intval($value['world']);
+            $rows[$key]['score'] = intval($value['score']);
         }
         
         file_put_contents(get_file_cache($v), json_encode($rows));
