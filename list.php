@@ -62,6 +62,11 @@ function get_ranking($global = true) {
         array(':facebook_id' => $facebook_id)
         );
     $rows1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
+    
+    $rows1[0]['world'] = intval($rows1[0]['world']);
+    $rows1[0]['score'] = intval($rows1[0]['score']);
+    $rows1[0]['ranking'] = intval($rows1[0]['ranking']);
+    
     return $rows1;
 }
 
