@@ -50,16 +50,18 @@ if ($renew_cache == "1") {
         if ($v == "global") {
             $sql = "
     SELECT 
-	*
-    FROM leaderboard
+	*,
+        ROW_NUMBER() OVER (ORDER BY score DESC, facebook_id) as ranking
+    FROM leaderboard WHERE world = $current_world 
     ORDER BY score DESC, facebook_id
     LIMIT $limit;
             ";            
         } else {
             $sql = "
     SELECT 
-	*
-    FROM leaderboard WHERE country = '$v'
+	*,
+        ROW_NUMBER() OVER (ORDER BY score DESC, facebook_id) as ranking
+    FROM leaderboard WHERE world = $current_world and country = '$v'
     ORDER BY score DESC, facebook_id
     LIMIT $limit;
             ";            
@@ -78,7 +80,7 @@ if ($renew_cache == "1") {
 }
 
 
-$sql1 = "select * from leaderboard where facebook_id = :facebook_id and world = $current_world";
+$sql1 = "select * from leaderboard where world = $current_world and facebook_id = :facebook_id ";
 $statement1 = $connection->prepare($sql1);
 $statement1->execute(
         array(':facebook_id' => $facebook_id)
@@ -115,7 +117,15 @@ $array_json = json_decode($result, TRUE);
 $array_friend_id = array_column($array_json["data"], "id");
 $array_friend_id[] = $facebook_id;
 
-$sql2 = "SELECT * FROM leaderboard WHERE facebook_id IN ('".implode("', '", $array_friend_id)."') and world = $current_world";
+$sql2 = "
+    SELECT 
+        *,
+        ROW_NUMBER() OVER (ORDER BY score DESC, facebook_id) as ranking
+    FROM leaderboard 
+    WHERE facebook_id IN ('".implode("', '", $array_friend_id)."') and world = $current_world
+    ORDER BY score DESC, facebook_id
+    LIMIT $limit;
+        ";
 $statement2 = $connection->prepare($sql2);
 $statement2->execute();
 $row_friend = $statement2->fetchAll(PDO::FETCH_ASSOC);
