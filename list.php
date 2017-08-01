@@ -135,9 +135,11 @@ $statement2 = $connection->prepare($sql2);
 $statement2->execute();
 $row_friend = $statement2->fetchAll(PDO::FETCH_ASSOC);
 foreach ($row_friend as $key => $value) {
-    $row_friend[$key]['world'] = intval($value['world']);
-    $row_friend[$key]['score'] = intval($value['score']);
-    $row_friend[$key]['ranking'] = intval($value['ranking']);
+    if (isset($value['facebook_id']) && $value['facebook_id'] != null) {
+        $row_friend[$key]['world'] = intval($value['world']);
+        $row_friend[$key]['score'] = intval($value['score']);
+        $row_friend[$key]['ranking'] = intval($value['ranking']);
+    }
 }
 
 
