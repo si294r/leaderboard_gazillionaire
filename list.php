@@ -90,16 +90,20 @@ $rows1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
 /* Leaderboard Global */
 $row_global = read_cache("global");
 if (array_search($facebook_id, array_column($row_global, "facebook_id")) === FALSE) {
-    if (isset($rows1[0])) $rows1[0]['country'] = "global";
-    $row_global[] = $rows1[0];
+    if (isset($rows1[0]['country'])) {
+        $rows1[0]['country'] = "global";
+        $row_global[] = $rows1[0];
+    }
 }
 usort($row_global, 'cmp_row');
 
 /* Leaderboard Region */
 $row_region = read_cache($country);
 if (array_search($facebook_id, array_column($row_region, "facebook_id")) === FALSE) {
-    if (isset($rows1[0])) $rows1[0]['country'] = $country;
-    $row_region[] = $rows1[0];
+    if (isset($rows1[0]['country'])) {
+        $rows1[0]['country'] = $country;
+        $row_region[] = $rows1[0];
+    }
 }
 usort($row_region, 'cmp_row');
 
