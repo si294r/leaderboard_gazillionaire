@@ -32,6 +32,39 @@ function cmp_row($a, $b) {
     return (intval($a['score']) < intval($b['score'])) ? -1 : 1;
 }
 
+function get_ranking($global = true) {
+    global $connection, $current_world, $facebook_id, $country;
+    
+    if ($global) {
+        $sql1 = "
+        SELECT *,
+                (
+            SELECT sum(score > t1.score) + sum(score = t1.score and facebook_id <= t1.facebook_id) ranking
+                FROM leaderboard
+                WHERE world = t1.world AND score >= t1.score
+            ) AS ranking
+        FROM leaderboard t1 WHERE world = $current_world AND facebook_id = :facebook_id;
+        ";
+    } else {
+        $sql1 = "
+        SELECT *,
+                (
+            SELECT sum(score > t1.score) + sum(score = t1.score and facebook_id <= t1.facebook_id) ranking
+                FROM leaderboard
+                WHERE world = t1.world AND country = t1.country AND score >= t1.score
+            ) AS ranking
+        FROM leaderboard t1 WHERE world = $current_world AND country = '$country' AND facebook_id = :facebook_id;
+        ";
+    }
+    
+    $statement1 = $connection->prepare($sql1);
+    $statement1->execute(
+        array(':facebook_id' => $facebook_id)
+        );
+    $rows1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
+    return $rows1;
+}
+
 if ($renew_cache == "1") {
     // To Do - Get Country Code from table leaderboard
     $CountryCodes;
@@ -81,16 +114,17 @@ if ($renew_cache == "1") {
 }
 
 
-$sql1 = "select * from leaderboard where world = $current_world and facebook_id = :facebook_id ";
-$statement1 = $connection->prepare($sql1);
-$statement1->execute(
-        array(':facebook_id' => $facebook_id)
-        );
-$rows1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
+//$sql1 = "select * from leaderboard where world = $current_world and facebook_id = :facebook_id ";
+//$statement1 = $connection->prepare($sql1);
+//$statement1->execute(
+//        array(':facebook_id' => $facebook_id)
+//        );
+//$rows1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
 
 /* Leaderboard Global */
 $row_global = read_cache("global");
 if (array_search($facebook_id, array_column($row_global, "facebook_id")) === FALSE) {
+    $rows1 = get_ranking($global = true);
     if (isset($rows1[0]['country'])) {
         $rows1[0]['country'] = "global";
         $row_global[] = $rows1[0];
@@ -101,6 +135,7 @@ usort($row_global, 'cmp_row');
 /* Leaderboard Region */
 $row_region = read_cache($country);
 if (array_search($facebook_id, array_column($row_region, "facebook_id")) === FALSE) {
+    $rows1 = get_ranking($global = false);
     if (isset($rows1[0]['country'])) {
         $rows1[0]['country'] = $country;
         $row_region[] = $rows1[0];
@@ -141,7 +176,7 @@ foreach ($row_friend as $key => $value) {
             $row_friend[$key]['score'] = intval($value['score']);
             $row_friend[$key]['ranking'] = intval($value['ranking']);
         } else {
-            unset($row_friend[$key]);
+            unset($row_friend[$key]); // sepertinya tidak berfungsi...
         }
     }
 }
