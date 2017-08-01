@@ -130,7 +130,7 @@ if (array_search($facebook_id, array_column($row_global, "facebook_id")) === FAL
         $row_global[] = $rows1[0];
     }
 }
-usort($row_global, 'cmp_row');
+//usort($row_global, 'cmp_row');
 
 /* Leaderboard Region */
 $row_region = read_cache($country);
@@ -141,7 +141,7 @@ if (array_search($facebook_id, array_column($row_region, "facebook_id")) === FAL
         $row_region[] = $rows1[0];
     }
 }
-usort($row_region, 'cmp_row');
+//usort($row_region, 'cmp_row');
 
 /* Leaderboard Friend */
 $result = file_get_contents('https://graph.facebook.com/v2.9/'.$facebook_id.'/friends', null, stream_context_create(
