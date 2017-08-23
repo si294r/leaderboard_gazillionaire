@@ -32,7 +32,7 @@ function cmp_row($a, $b) {
     return (intval($a['score']) < intval($b['score'])) ? -1 : 1;
 }
 
-function get_ranking($global = true) {
+function get_current_user_ranking($global = true) {
     global $connection, $current_world, $facebook_id, $country;
     
     if ($global) {
@@ -128,8 +128,10 @@ if ($renew_cache == "1") {
 
 /* Leaderboard Global */
 $row_global = read_cache("global");
+
+/* penambahan current user jika data global tidak ada 'current user' */
 if (array_search($facebook_id, array_column($row_global, "facebook_id")) === FALSE) {
-    $rows1 = get_ranking($global = true);
+    $rows1 = get_current_user_ranking($global = true);
     if (isset($rows1[0]['country'])) {
         $rows1[0]['country'] = "global";
         $row_global[] = $rows1[0];
@@ -139,8 +141,10 @@ if (array_search($facebook_id, array_column($row_global, "facebook_id")) === FAL
 
 /* Leaderboard Region */
 $row_region = read_cache($country);
+
+/* penambahan current user jika data region tidak ada 'current user' */
 if (array_search($facebook_id, array_column($row_region, "facebook_id")) === FALSE) {
-    $rows1 = get_ranking($global = false);
+    $rows1 = get_current_user_ranking($global = false);
     if (isset($rows1[0]['country'])) {
         $rows1[0]['country'] = $country;
         $row_region[] = $rows1[0];
