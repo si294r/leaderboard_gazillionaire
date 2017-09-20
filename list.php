@@ -25,12 +25,12 @@ function read_cache($param) {
     }
 }
 
-function cmp_row($a, $b) {
-    if (intval($a['score']) == intval($b['score'])) {
-        return 0;
-    }
-    return (intval($a['score']) < intval($b['score'])) ? -1 : 1;
-}
+//function cmp_row($a, $b) {
+//    if (floatval($a['score']) == floatval($b['score'])) {
+//        return 0;
+//    }
+//    return (floatval($a['score']) < floatval($b['score'])) ? -1 : 1;
+//}
 
 function get_current_user_ranking($global = true) {
     global $connection, $current_world, $facebook_id, $country;
@@ -64,7 +64,7 @@ function get_current_user_ranking($global = true) {
     $rows1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
     
     $rows1[0]['world'] = intval($rows1[0]['world']);
-    $rows1[0]['score'] = intval($rows1[0]['score']);
+    $rows1[0]['score'] = floatval($rows1[0]['score']);
     $rows1[0]['ranking'] = intval($rows1[0]['ranking']);
     
     return $rows1;
@@ -110,7 +110,7 @@ if ($renew_cache == "1") {
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
         foreach ($rows as $key => $value) {
             $rows[$key]['world'] = intval($value['world']);
-            $rows[$key]['score'] = intval($value['score']);
+            $rows[$key]['score'] = floatval($value['score']);
             $rows[$key]['ranking'] = intval($value['ranking']);
         }
         
@@ -182,7 +182,7 @@ foreach ($row_friend as $key => $value) {
     if (isset($value['facebook_id'])) {
         if ($value['facebook_id'] != null) {
             $row_friend[$key]['world'] = intval($value['world']);
-            $row_friend[$key]['score'] = intval($value['score']);
+            $row_friend[$key]['score'] = floatval($value['score']);
             $row_friend[$key]['ranking'] = intval($value['ranking']);
         } else {
             unset($row_friend[$key]); // sepertinya tidak berfungsi...
