@@ -14,7 +14,25 @@ $connection = new PDO(
     "mysql:dbname=$mydatabase;host=$myhost;port=$myport",
     $myuser, $mypass
 );
-    
+
+$result = file_get_contents('https://graph.facebook.com/v2.9/'.$data['facebook_id'].'?fields=id,name,currency', null, stream_context_create(
+        array(
+            'http' => array(
+                'method' => 'GET',
+                'header' => 'Authorization:OAuth '. ($IS_DEVELOPMENT ? FACEBOOK_APP_TOKEN_DEV : FACEBOOK_APP_TOKEN)
+            )
+        )
+    )
+);
+$array_json = json_decode($result, TRUE);
+
+if (trim($data['display_name']) == "" && isset($array_json['name'])) {
+    $data['display_name'] = $array_json['name'];
+}
+if (trim($data['country']) == "" && isset($array_json['currency']['user_currency'])) {
+    $data['country'] = substr($array_json['currency']['user_currency'], 0, 2);
+}
+
 // create record if not exists
 $sql1 = "INSERT INTO leaderboard (facebook_id, world, country, score, display_name, last_update)
     VALUES (:facebook_id, $current_world, :country, :score, :display_name, NOW())
