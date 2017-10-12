@@ -55,6 +55,7 @@ $params = explode("/", $query_string);
 
 $service = isset($params[0]) ? $params[0] : "";
 $current_world = isset($params[1]) && is_numeric($params[1]) ? $params[1]: "1";
+$current_world = "1"; // leaderboard
 
 // if service suffix is -dev then mark as DEVELOPMENT
 if (strpos($service, "-dev")) {
