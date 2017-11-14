@@ -10,6 +10,13 @@ $data['country'] = isset($json->country) ? $json->country : "";
 $data['score'] = isset($json->score) ? $json->score : 0;
 $data['display_name'] = isset($json->display_name) ? $json->display_name : "";
 
+if (trim($data['facebook_id']) == "") {
+    $data['affected_row'] = 0;
+    $data['error'] = 0;
+    $data['message'] = "Success";
+    return $data;
+}
+
 $connection = new PDO(
     "mysql:dbname=$mydatabase;host=$myhost;port=$myport",
     $myuser, $mypass

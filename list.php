@@ -153,6 +153,18 @@ if (array_search($facebook_id, array_column($row_region, "facebook_id")) === FAL
 //usort($row_region, 'cmp_row');
 
 /* Leaderboard Friend */
+
+if (trim($facebook_id) == "") {
+    $data["facebook_id"] = $facebook_id;
+    $data["country"] = $country;
+    $data["limit"] = $limit;
+    $data["global"] = $row_global;
+    $data["region"] = $row_region;
+    $data["friend"] = [];
+
+    return $data;
+}
+
 $result = file_get_contents('https://graph.facebook.com/v2.9/'.$facebook_id.'/friends', null, stream_context_create(
         array(
             'http' => array(
